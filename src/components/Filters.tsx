@@ -1,0 +1,87 @@
+import type { ParsedTable } from '../lib/parseCsv'
+import type { ColumnInfo } from '../lib/detectColumnTypes'
+import { uniqueValues, emptyFilters, type RowFilters } from '../lib/filterRows'
+
+type FiltersProps = {
+  table: ParsedTable
+  columns: ColumnInfo[]
+  filters: RowFilters
+  onChange: (filters: RowFilters) => void
+}
+
+function Filters({ table, columns, filters, onChange }: FiltersProps) {
+  const hasDate = columns.some((column) => column.type === 'date')
+  const categoryColumns = columns.filter((column) => column.type === 'category')
+
+  return (
+    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+      {hasDate && (
+        <>
+          <label>
+            Від:{' '}
+            <input
+              type="date"
+              value={filters.from}
+              onChange={(event) => onChange({ ...filters, from: event.target.value })}
+            />
+          </label>
+          <label>
+            До:{' '}
+            <input
+              type="date"
+              value={filters.to}
+              onChange={(event) => onChange({ ...filters, to: event.target.value })}
+            />
+          </label>
+        </>
+      )}
+
+      {categoryColumns.length > 0 && (
+        <>
+          <label>
+            Фільтр за:{' '}
+            <select
+              value={filters.categoryColumn}
+              onChange={(event) =>
+                onChange({
+                  ...filters,
+                  categoryColumn: event.target.value,
+                  categoryValue: '',
+                })
+              }
+            >
+              <option value="">—</option>
+              {categoryColumns.map((column) => (
+                <option key={column.name} value={column.name}>
+                  {column.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {filters.categoryColumn && (
+            <select
+              value={filters.categoryValue}
+              onChange={(event) =>
+                onChange({ ...filters, categoryValue: event.target.value })
+              }
+            >
+              <option value="">Усі</option>
+              {uniqueValues(table, filters.categoryColumn).map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          )}
+        </>
+      )}
+
+      <button type="button" onClick={() => onChange(emptyFilters)}>
+        Скинути
+      </button>
+    </div>
+  )
+}
+
+export default Filters
