@@ -11,10 +11,11 @@ import type { SeriesPoint } from '../lib/aggregate'
 
 type TimeSeriesChartProps = {
   title: string
+  valueLabel: string
   data: SeriesPoint[]
 }
 
-function TimeSeriesChart({ title, data }: TimeSeriesChartProps) {
+function TimeSeriesChart({ title, valueLabel, data }: TimeSeriesChartProps) {
   return (
     <section className="card">
       <div className="chart-header">
@@ -30,6 +31,7 @@ function TimeSeriesChart({ title, data }: TimeSeriesChartProps) {
             <Line
               type="monotone"
               dataKey="value"
+              name={valueLabel}
               stroke="#4f46e5"
               strokeWidth={2}
             />

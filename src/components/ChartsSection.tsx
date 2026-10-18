@@ -60,6 +60,7 @@ function ChartsSection({ table }: ChartsSectionProps) {
       {dateColumn && (
         <TimeSeriesChart
           title={`${valueColumn.name} по днях`}
+          valueLabel={valueColumn.name}
           data={sumByDate(table, dateColumn.name, valueColumn.name)}
         />
       )}
@@ -67,6 +68,7 @@ function ChartsSection({ table }: ChartsSectionProps) {
       {categoryColumn && (
         <CategoryChart
           title={`${valueColumn.name} за ${categoryColumn.name}`}
+          valueLabel={valueColumn.name}
           data={sumByCategory(table, categoryColumn.name, valueColumn.name)}
           controls={
             <div className="toolbar">
