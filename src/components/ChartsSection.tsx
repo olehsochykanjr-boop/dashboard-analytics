@@ -28,7 +28,11 @@ function ChartsSection({ table }: ChartsSectionProps) {
     categoryColumns[0]
 
   if (!valueColumn) {
-    return <p>Не знайдено числових колонок, графіки не побудовано.</p>
+    return (
+      <p className="card empty">
+        Не знайдено числових колонок, графіки не побудовано.
+      </p>
+    )
   }
 
   return (
