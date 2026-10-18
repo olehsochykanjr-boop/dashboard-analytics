@@ -13,10 +13,16 @@ function App() {
   }
 
   return (
-    <main>
-      <h1>Dashboard Analytics</h1>
-      <p>Завантаж CSV файл, щоб побачити аналітику.</p>
-      <FileUpload onParsed={handleParsed} />
+    <main className="app">
+      <header className="app-header">
+        <h1>Dashboard Analytics</h1>
+        <p>Завантаж CSV або Excel файл, щоб побачити аналітику.</p>
+      </header>
+
+      <section className="card">
+        <FileUpload onParsed={handleParsed} />
+      </section>
+
       {table && <Dashboard key={uploadId} table={table} />}
     </main>
   )
