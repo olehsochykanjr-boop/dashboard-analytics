@@ -17,14 +17,11 @@ function StatCards({ summary, label }: StatCardsProps) {
   ]
 
   return (
-    <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
+    <div className="stats">
       {cards.map((card) => (
-        <div
-          key={card.title}
-          style={{ border: '1px solid #444', borderRadius: 8, padding: 12 }}
-        >
-          <small>{card.title}</small>
-          <div style={{ fontSize: 24, fontWeight: 600 }}>{card.value}</div>
+        <div key={card.title} className="stat-card">
+          <span className="stat-title">{card.title}</span>
+          <span className="stat-value">{card.value}</span>
         </div>
       ))}
     </div>
