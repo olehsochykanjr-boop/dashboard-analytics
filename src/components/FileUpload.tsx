@@ -42,17 +42,23 @@ function FileUpload({ onParsed }: FileUploadProps) {
   }
 
   return (
-    <div>
-      <label htmlFor="file-input">Оберіть CSV або Excel файл</label>
+    <div className="upload">
+      <label htmlFor="file-input" className="upload-area">
+        <span className="upload-title">Оберіть CSV або Excel файл</span>
+        <span className="upload-hint">.csv, .xlsx, .xls</span>
+        <span className="upload-button">Обрати файл</span>
+      </label>
       <input
         id="file-input"
+        className="visually-hidden"
         type="file"
         accept={SUPPORTED_EXTENSIONS.join(',')}
         onChange={handleChange}
       />
-      {fileName && <p>Вибрано: {fileName}</p>}
-      {loading && <p>Читаю файл...</p>}
-      {error && <p>{error}</p>}
+
+      {fileName && <p className="upload-status">Вибрано: {fileName}</p>}
+      {loading && <p className="upload-status">Обробляю файл...</p>}
+      {error && <p className="upload-error">{error}</p>}
     </div>
   )
 }
