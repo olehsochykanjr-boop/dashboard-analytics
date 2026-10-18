@@ -1,4 +1,5 @@
 import type { ParsedTable } from './parseCsv'
+import { toIsoDate } from './aggregate'
 
 export type ColumnType = 'date' | 'number' | 'category' | 'text'
 
@@ -17,9 +18,12 @@ function isNumber(value: string): boolean {
 }
 
 function isDate(value: string): boolean {
-  const isIso = /^\d{4}-\d{2}-\d{2}/.test(value)
-  const isEuropean = /^\d{1,2}[./]\d{1,2}[./]\d{4}$/.test(value)
-  return (isIso || isEuropean) && !Number.isNaN(Date.parse(value.slice(0, 10)))
+  const iso = toIsoDate(value)
+  if (iso === null) return false
+
+  // Перевіряємо, що така дата справді існує (31.02 або 99.99 не пройдуть).
+  const parsed = new Date(`${iso}T00:00:00Z`)
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === iso
 }
 
 function detectType(values: string[]): ColumnType {
