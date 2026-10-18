@@ -1,75 +1,96 @@
-# React + TypeScript + Vite
+# Dashboard Analytics
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-застосунок, який перетворює CSV або Excel-таблицю на інтерактивний дашборд: сам визначає типи колонок, рахує статистику, будує графіки й дає фільтри та таблицю з сортуванням. Усе працює **в браузері**: файл нікуди не відправляється.
 
-Currently, two official plugins are available:
+**Демо:** _буде додано після деплою_
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Дашборд](docs/dashboard.png)
 
-## React Compiler
+## Можливості
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Завантаження **CSV** та **Excel** (`.xlsx`, `.xls`)
+- **Автоматичне визначення типів колонок**: дата, число, категорія, текст
+- Підтримка українських форматів: числа з комою (`1 234,56`), дати `dd.mm.yyyy`, кодування **UTF-8 та windows-1251**, роздільники `,` і `;`
+- Картки зі статистикою: сума, середнє, максимум, кількість записів
+- Графіки: динаміка по днях (лінійний) і розподіл за категоріями (стовпчиковий), із вибором показника та групування
+- Фільтри за діапазоном дат і значенням категорії
+- Таблиця з **сортуванням** за типом колонки та **пагінацією**
+- Адаптивний інтерфейс (телефон, планшет, ПК)
+- Зрозумілі повідомлення про помилки: невідомий формат, порожній файл, немає числових колонок
 
-## Expanding the ESLint configuration
+| Телефон |
+| --- |
+| ![Мобільна версія](docs/mobile.png) |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Технології
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **React 19** + **TypeScript** (strict)
+- **Vite 8** для збірки
+- **Recharts 3** для графіків
+- **PapaParse** для CSV, **SheetJS (xlsx)** для Excel
+- **ESLint**, звичайний **CSS** зі змінними (без UI-бібліотек)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Як це працює
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Файл читається в браузері й перетворюється на таблицю (`columns` + `rows`). Далі:
+
+1. **`detectColumnTypes`** бере перші 100 рядків. Якщо ≥ 90 % значень колонки є числами, це `number`; якщо датами, це `date`; якщо унікальних значень не більше 20, це `category`; інакше `text`.
+2. **Фільтри** створюють відфільтровану копію таблиці, від якої залежать картки, графіки й таблиця.
+3. **Агрегації** (`sumByDate`, `sumByCategory`, `summarize`) готують дані для графіків і карток.
+
+## Структура проєкту
 
 ```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+src/
+├── components/     UI: FileUpload, Filters, StatCards, графіки, DataTable, Dashboard
+├── lib/            чиста логіка без React:
+│   ├── parseCsv.ts, parseExcel.ts, parseFile.ts     читання файлів
+│   ├── detectColumnTypes.ts                          визначення типів
+│   ├── filterRows.ts, aggregate.ts, stats.ts         фільтри й обчислення
+│   └── sortRows.ts                                   сортування
+├── App.tsx
+└── index.css       стилі
+samples/            приклад даних
+docs/               скріншоти
 ```
+
+Логіка винесена в `lib/` окремо від компонентів, тому її легко перевіряти й перевикористовувати.
+
+## Запуск локально
+
+Потрібен Node.js 22 або новіший.
+
+```bash
+git clone https://github.com/olehsochykanjr-boop/dashboard-analytics.git
+cd dashboard-analytics
+npm install
+npm run dev
+```
+
+Відкрий `http://localhost:5173` і завантаж `samples/sales.csv`.
+
+Інші команди:
+
+```bash
+npm run build     # продакшн-збірка
+npm run lint      # перевірка ESLint
+```
+
+## Відомі обмеження
+
+- Типи колонок визначаються за перших 100 рядків
+- Колонка з понад 20 унікальними текстовими значеннями вважається текстом, а не категорією
+- Підтримуються дати `yyyy-mm-dd` і `dd.mm.yyyy` (також з `/`)
+- З Excel читається лише перший аркуш
+- Дуже великі файли (сотні тисяч рядків) можуть працювати повільно, бо все обробляється в браузері
+
+## Можливі покращення
+
+- Автотести логіки з `lib/` (Vitest)
+- Вибір аркуша в Excel
+- Експорт відфільтрованих даних
+- Темна тема
+
+## Автор
+
+Олег LiveCoding: [GitHub](https://github.com/olehsochykanjr-boop)
