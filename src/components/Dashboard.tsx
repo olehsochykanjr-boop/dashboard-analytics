@@ -31,7 +31,7 @@ function Dashboard({ table }: DashboardProps) {
       />
 
       {filtered.rows.length === 0 ? (
-        <p>За цими фільтрами даних немає.</p>
+        <p className="card empty">За цими фільтрами даних немає.</p>
       ) : (
         <>
           <ChartsSection table={filtered} />
