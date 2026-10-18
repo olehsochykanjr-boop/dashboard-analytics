@@ -14,19 +14,19 @@ function Filters({ table, columns, filters, onChange }: FiltersProps) {
   const categoryColumns = columns.filter((column) => column.type === 'category')
 
   return (
-    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+    <div className="card filters">
       {hasDate && (
         <>
-          <label>
-            Від:{' '}
+          <label className="field">
+            <span>Від</span>
             <input
               type="date"
               value={filters.from}
               onChange={(event) => onChange({ ...filters, from: event.target.value })}
             />
           </label>
-          <label>
-            До:{' '}
+          <label className="field">
+            <span>До</span>
             <input
               type="date"
               value={filters.to}
@@ -38,8 +38,8 @@ function Filters({ table, columns, filters, onChange }: FiltersProps) {
 
       {categoryColumns.length > 0 && (
         <>
-          <label>
-            Фільтр за:{' '}
+          <label className="field">
+            <span>Фільтр за</span>
             <select
               value={filters.categoryColumn}
               onChange={(event) =>
@@ -60,19 +60,22 @@ function Filters({ table, columns, filters, onChange }: FiltersProps) {
           </label>
 
           {filters.categoryColumn && (
-            <select
-              value={filters.categoryValue}
-              onChange={(event) =>
-                onChange({ ...filters, categoryValue: event.target.value })
-              }
-            >
-              <option value="">Усі</option>
-              {uniqueValues(table, filters.categoryColumn).map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
+            <label className="field">
+              <span>Значення</span>
+              <select
+                value={filters.categoryValue}
+                onChange={(event) =>
+                  onChange({ ...filters, categoryValue: event.target.value })
+                }
+              >
+                <option value="">Усі</option>
+                {uniqueValues(table, filters.categoryColumn).map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
         </>
       )}
