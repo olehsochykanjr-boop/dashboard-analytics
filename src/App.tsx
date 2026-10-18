@@ -12,6 +12,8 @@ function App() {
     setUploadId((id) => id + 1)
   }
 
+  const handleReset = () => setTable(null)
+
   return (
     <main className="app">
       <header className="app-header">
@@ -20,7 +22,7 @@ function App() {
       </header>
 
       <section className="card">
-        <FileUpload onParsed={handleParsed} />
+        <FileUpload onParsed={handleParsed} onReset={handleReset} />
       </section>
 
       {table && <Dashboard key={uploadId} table={table} />}
