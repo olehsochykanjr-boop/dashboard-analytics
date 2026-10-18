@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import {
   Bar,
   BarChart,
@@ -11,20 +12,24 @@ import {
 type CategoryChartProps = {
   title: string
   data: { label: string; value: number }[]
+  controls?: ReactNode
 }
 
-function CategoryChart({ title, data }: CategoryChartProps) {
+function CategoryChart({ title, data, controls }: CategoryChartProps) {
   return (
-    <section>
-      <h2>{title}</h2>
-      <div style={{ width: '100%', height: 300 }}>
+    <section className="card">
+      <div className="chart-header">
+        <h2 className="chart-title">{title}</h2>
+        {controls}
+      </div>
+      <div className="chart-box">
         <ResponsiveContainer>
           <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="label" />
-            <YAxis />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
             <Tooltip />
-            <Bar dataKey="value" fill="#646cff" />
+            <Bar dataKey="value" fill="#4f46e5" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

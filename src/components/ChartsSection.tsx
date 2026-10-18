@@ -33,18 +33,20 @@ function ChartsSection({ table }: ChartsSectionProps) {
 
   return (
     <div>
-      <label htmlFor="value-column">Показник: </label>
-      <select
-        id="value-column"
-        value={valueColumn.name}
-        onChange={(event) => setSelectedValue(event.target.value)}
-      >
-        {numberColumns.map((column) => (
-          <option key={column.name} value={column.name}>
-            {column.name}
-          </option>
-        ))}
-      </select>
+      <div className="toolbar">
+        <label htmlFor="value-column">Показник</label>
+        <select
+          id="value-column"
+          value={valueColumn.name}
+          onChange={(event) => setSelectedValue(event.target.value)}
+        >
+          {numberColumns.map((column) => (
+            <option key={column.name} value={column.name}>
+              {column.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <StatCards
         summary={summarize(table, valueColumn.name)}
@@ -59,25 +61,26 @@ function ChartsSection({ table }: ChartsSectionProps) {
       )}
 
       {categoryColumn && (
-        <div>
-          <label htmlFor="category-column">Групувати за: </label>
-          <select
-            id="category-column"
-            value={categoryColumn.name}
-            onChange={(event) => setSelectedCategory(event.target.value)}
-          >
-            {categoryColumns.map((column) => (
-              <option key={column.name} value={column.name}>
-                {column.name}
-              </option>
-            ))}
-          </select>
-
-          <CategoryChart
-            title={`${valueColumn.name} за ${categoryColumn.name}`}
-            data={sumByCategory(table, categoryColumn.name, valueColumn.name)}
-          />
-        </div>
+        <CategoryChart
+          title={`${valueColumn.name} за ${categoryColumn.name}`}
+          data={sumByCategory(table, categoryColumn.name, valueColumn.name)}
+          controls={
+            <div className="toolbar">
+              <label htmlFor="category-column">Групувати за</label>
+              <select
+                id="category-column"
+                value={categoryColumn.name}
+                onChange={(event) => setSelectedCategory(event.target.value)}
+              >
+                {categoryColumns.map((column) => (
+                  <option key={column.name} value={column.name}>
+                    {column.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          }
+        />
       )}
     </div>
   )
