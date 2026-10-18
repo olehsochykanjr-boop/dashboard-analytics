@@ -1,5 +1,14 @@
 import type { ParsedTable } from './parseCsv'
 
+// Excel часто зберігає дату як дату з часом: "2026-10-01 0:00:00".
+// Якщо час це північ, лишаємо тільки дату. Справжній час (14:30) не чіпаємо.
+function stripMidnight(value: string): string {
+  return value.replace(
+    /^(\d{1,4}[-./]\d{1,2}[-./]\d{1,4}) 0{1,2}:00(?::00)?$/,
+    '$1',
+  )
+}
+
 export async function parseExcel(file: File): Promise<ParsedTable> {
   const XLSX = await import('xlsx')
 
@@ -37,7 +46,7 @@ export async function parseExcel(file: File): Promise<ParsedTable> {
         record[column] =
           typeof rawCell === 'number'
             ? String(rawCell)
-            : String(formattedRow[index] ?? '')
+            : stripMidnight(String(formattedRow[index] ?? ''))
       })
 
       return record
