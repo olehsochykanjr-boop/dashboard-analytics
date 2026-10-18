@@ -1,3 +1,4 @@
+/* ===== Змінні ===== */
 :root {
   --bg: #f5f7fb;
   --surface: #ffffff;
@@ -6,6 +7,8 @@
   --border: #e5e7eb;
   --primary: #4f46e5;
   --primary-soft: #eef2ff;
+  --danger: #b91c1c;
+  --danger-soft: #fef2f2;
   --radius: 12px;
   --shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
 
@@ -14,6 +17,7 @@
   background: var(--bg);
 }
 
+/* ===== Базові стилі ===== */
 *,
 *::before,
 *::after {
@@ -25,6 +29,12 @@ body {
   min-height: 100vh;
 }
 
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ===== Каркас сторінки ===== */
 .app {
   max-width: 1100px;
   margin: 0 auto;
@@ -54,6 +64,21 @@ body {
   margin-bottom: 20px;
 }
 
+.empty {
+  color: var(--muted);
+  text-align: center;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ===== Елементи форм ===== */
 select,
 input[type='date'] {
   padding: 8px 10px;
@@ -79,15 +104,17 @@ button:hover {
   border-color: var(--primary);
 }
 
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
+button:disabled:hover {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* ===== Завантаження файлу ===== */
 .upload-area {
   display: flex;
   flex-direction: column;
@@ -107,7 +134,6 @@ button:hover {
   background: var(--primary-soft);
 }
 
-.visually-hidden:focus-visible + .upload-status,
 .upload:has(.visually-hidden:focus-visible) .upload-area {
   border-color: var(--primary);
   outline: 2px solid var(--primary);
@@ -141,39 +167,11 @@ button:hover {
   margin: 12px 0 0;
   padding: 10px 12px;
   border-radius: 8px;
-  background: #fef2f2;
-  color: #b91c1c;
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.stat-card {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 16px 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--primary);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-.stat-title {
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.stat-value {
-  font-size: 1.75rem;
-  font-weight: 700;
-}
-
+/* ===== Фільтри та панелі вибору ===== */
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -204,6 +202,37 @@ button:hover {
   font-size: 0.875rem;
 }
 
+/* ===== Картки статистики ===== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.stat-title {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* ===== Графіки ===== */
 .chart-header {
   display: flex;
   flex-wrap: wrap;
@@ -213,13 +242,13 @@ button:hover {
   margin-bottom: 16px;
 }
 
+.chart-header .toolbar {
+  margin-bottom: 0;
+}
+
 .chart-title {
   margin: 0;
   font-size: 1.1rem;
-}
-
-.chart-header .toolbar {
-  margin-bottom: 0;
 }
 
 .chart-box {
@@ -227,21 +256,7 @@ button:hover {
   height: 300px;
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-button:disabled:hover {
-  background: var(--surface);
-  border-color: var(--border);
-}
-
-.empty {
-  color: var(--muted);
-  text-align: center;
-}
-
+/* ===== Таблиця ===== */
 .table-meta {
   margin: 0 0 12px;
   color: var(--muted);
@@ -314,4 +329,36 @@ button:disabled:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* ===== Телефон (має бути в кінці, щоб перебивати решту) ===== */
+@media (max-width: 600px) {
+  .app {
+    padding: 20px 12px 48px;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .chart-box {
+    height: 240px;
+  }
+
+  .field {
+    flex: 1 1 140px;
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
 }
